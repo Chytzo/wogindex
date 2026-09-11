@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const fusion = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'fusion.json', 'utf-8'));
+const equip = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'equip.json', 'utf-8'));
+const eName = (num) => { const e = equip.find(x => x.row[0] === num); return e ? (e.name_en || e.name_es || `#${num}`) : `#${num}`; };
+---
+<BaseLayout title="Fusion">
+  <h1 class="text-3xl font-bold mb-2">Fusion <span class="text-gray-500 text-lg font-normal">({fusion.length} recipes)</span></h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    {fusion.map((f) => (
+      <div class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition">
+        <div class="text-sm font-medium">{eName(f[0])}</div>
+        <div class="text-xs text-gray-500 mt-0.5">Result {eName(f[2] ?? f[1])} — Count {f[3] ?? "—"}</div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

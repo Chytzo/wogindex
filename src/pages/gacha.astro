@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const gacha = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'gacha.json', 'utf-8'));
+const list = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'gachalist.json', 'utf-8'));
+const items = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'items.json', 'utf-8'));
+const itemName = (num) => { const it = items.find(i => i.row[0] === num); return it ? (it.name_en || it.name_es || `#${num}`) : `#${num}`; };
+---
+<BaseLayout title="Gacha">
+  <h1 class="text-3xl font-bold mb-2">Gacha <span class="text-gray-500 text-lg font-normal">({gacha.length} pools, {list.length} items)</span></h1>
+  <div class="grid md:grid-cols-2 gap-4">
+    {gacha.slice(0, 40).map((g) => {
+      const poolItems = list.filter(l => l[0] === g[0]);
+      return (
+      <div class="bg-dark-card border border-dark-border rounded-xl p-4">
+        <div class="font-semibold mb-2">Pool #{g[0]}</div>
+        <div class="flex gap-2 text-xs mb-3">
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">Entries {poolItems.length}</span>
+        </div>
+        {poolItems.length > 0 && <div class="space-y-1.5">
+          {poolItems.slice(0, 8).map((pi) => (
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-gray-300">{itemName(pi[2] ?? pi[1])}</span>
+              <span class="text-gray-500">{(pi[3] !== undefined && pi[3] !== null && pi[3] !== 0) ? `${pi[3]}%` : "—"}</span>
+            </div>
+          ))}
+          {poolItems.length > 8 && <div class="text-[11px] text-gray-600">+{poolItems.length - 8} more</div>}
+        </div>}
+      </div>);
+    })}
+  </div>
+</BaseLayout>

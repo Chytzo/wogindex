@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const items = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'items.json', 'utf-8'));
+---
+<BaseLayout title="Items">
+  <h1 class="text-3xl font-bold mb-2">Items <span class="text-gray-500 text-lg font-normal">({items.length})</span></h1>
+  <p class="text-gray-400 mb-6">Consumables, materials and quest items.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    {items.map((item) => (
+      <div class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-accent transition">
+        <div class="font-semibold">{item.name_en || item.name_es || `#${item.row[0]}`}</div>
+        {item.name_es && item.name_en !== item.name_es && <div class="text-xs text-gray-500">{item.name_es}</div>}
+        <div class="mt-2 flex gap-2 text-xs">
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">ID {item.row[0]}</span>
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">Price {item.row[5] ?? 0}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const abilities = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'abilities.json', 'utf-8'));
+---
+<BaseLayout title="Abilities">
+  <h1 class="text-3xl font-bold mb-2">Abilities <span class="text-gray-500 text-lg font-normal">({abilities.length})</span></h1>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+    {abilities.map((a) => (
+      <div class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition">
+        <div class="text-sm font-medium">Ability #{a[0]}</div>
+        <div class="text-xs text-gray-500 mt-1">Type {a[6] || "—"}</div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

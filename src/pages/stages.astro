@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const stages = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'stages.json', 'utf-8'));
+---
+<BaseLayout title="Stages">
+  <h1 class="text-3xl font-bold mb-2">Stages <span class="text-gray-500 text-lg font-normal">({stages.length})</span></h1>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {stages.map((s) => (
+      <div class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-accent transition">
+        <div class="font-semibold">{s[13] || `Stage ${s[0]}`}</div>
+        <div class="mt-2 flex gap-2 text-xs">
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">ID {s[0]}</span>
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">Type {s[2]}</span>
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">Group {s[4]}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

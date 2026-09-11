@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+export function getStaticPaths() {
+  const heroes = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'heroes.json', 'utf-8'));
+  return heroes.map((_, i) => ({ params: { id: String(i) } }));
+}
+
+const { id } = Astro.params;
+const heroes = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'heroes.json', 'utf-8'));
+const equip = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'equip.json', 'utf-8'));
+const hero = heroes[Number(id)];
+if (!hero) return Astro.redirect('/heroes');
+const r = hero.row;
+const name = hero.name_en || hero.name_es || `Hero #${id}`;
+const quality = r[2];
+const qColor = {2:"text-green-400",3:"text-blue-400",4:"text-purple-400",5:"text-orange-400",6:"text-red-400"};
+const qName = {1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Mythic"};
+const qBorder = {3:"border-blue-400",4:"border-purple-400",5:"border-orange-400",6:"border-red-400"};
+const stats = [
+  ["ID", r[0]], ["Base Class", r[1]], ["Quality", qName[quality] || quality],
+  ["ATK 1", r[10]], ["ATK 2", r[12]], ["DEF", r[13]], ["HP", r[14]],
+  ["Critical", r[15]], ["Speed", r[21]], ["Growth", r[26]], ["Active Skill", r[28]],
+  ["Passive Skill", r[30]], ["Portrait", r[34] || "—"],
+];
+---
+<BaseLayout title={name}>
+  <div class="mb-4">
+    <a href="/heroes" class="text-accent text-sm hover:underline">&larr; All Heroes</a>
+  </div>
+  <div class={`bg-dark-card border ${qBorder[quality] || "border-dark-border"} rounded-xl p-6 max-w-3xl`}>
+    <div class="flex items-start justify-between flex-wrap gap-4">
+      <div>
+        <h1 class={`text-3xl font-bold ${qColor[quality] || "text-gray-200"}`}>{name}</h1>
+        {hero.name_es && hero.name_en !== hero.name_es && <p class="text-gray-500">{hero.name_es}</p>}
+        <div class="flex gap-2 mt-3 text-xs flex-wrap">
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-gray-300">{qName[quality] || `Quality ${quality}`}</span>
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-gray-300">{r[1] || "Unknown class"}</span>
+        </div>
+      </div>
+      <div class="w-24 h-24 rounded-xl bg-gradient-to-br from-accent/30 to-purple-500/30 flex items-center justify-center text-4xl font-black text-white/80">
+        {(name[0] || "?").toUpperCase()}
+      </div>
+    </div>
+    <div class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+      {stats.map(([label, val]) => (
+        <div class="bg-dark-bg/60 border border-dark-border rounded-lg px-3 py-2">
+          <div class="text-[11px] uppercase text-gray-500 tracking-wide">{label}</div>
+          <div class="font-medium truncate" title={String(val ?? "")}>{val ?? "—"}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

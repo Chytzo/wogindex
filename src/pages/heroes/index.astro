@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const heroes = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'heroes.json', 'utf-8'));
+const qColor = {2:"text-green-400",3:"text-blue-400",4:"text-purple-400",5:"text-orange-400",6:"text-red-400"};
+const qName = {1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Mythic"};
+---
+<BaseLayout title="Heroes">
+  <h1 class="text-3xl font-bold mb-2">Heroes <span class="text-gray-500 text-lg font-normal">({heroes.length})</span></h1>
+  <p class="text-gray-400 mb-6">All playable and NPC characters in War of Genesis: Idle Loot.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    {heroes.map((h, i) => (
+      <a href={`/heroes/${i}`} class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-accent transition group relative">
+        <div class={`font-semibold text-lg ${qColor[h.row[2]] || "text-gray-200"}`}>{h.name_en || h.name_es || `Hero #${i}`}</div>
+        {h.name_es && h.name_en !== h.name_es && <div class="text-xs text-gray-500">{h.name_es}</div>}
+        <div class="mt-2 flex items-center gap-2 text-xs">
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">{qName[h.row[2]] || `Q${h.row[2]}`}</span>
+          <span class="bg-dark-bg border border-dark-border rounded px-2 py-0.5 text-gray-400">ID {h.row[0]}</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

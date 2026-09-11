@@ -1,0 +1,60 @@
+[1/7] Unzip data...
+Archive:  wog_wiki_data.zip
+  inflating: ./datos/abilities.json  
+  inflating: ./datos/abilityactions.json  
+  inflating: ./datos/droplists.json  
+  inflating: ./datos/drops.json      
+  inflating: ./datos/equip.json      
+  inflating: ./datos/fusion.json     
+  inflating: ./datos/fusionlevel.json  
+  inflating: ./datos/gacha.json      
+  inflating: ./datos/gachalist.json  
+  inflating: ./datos/heroes.json     
+  inflating: ./datos/items.json      
+  inflating: ./datos/locales.json    
+  inflating: ./datos/machina.json    
+  inflating: ./datos/monsters.json   
+  inflating: ./datos/passiveitems.json  
+  inflating: ./datos/passiveskills.json  
+  inflating: ./datos/pets.json       
+  inflating: ./datos/skills.json     
+  inflating: ./datos/stages.json     
+  inflating: ./datos/weapons.json    
+[2/7] Create package.json manually...
+[3/7] Install dependencies...
+
+Run `npm audit` for details.
+npm warn install-scripts 3 packages had install scripts blocked because they are not covered by allowScripts:
+npm warn install-scripts   esbuild@0.27.7 (postinstall: node install.js)
+npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+npm warn install-scripts   esbuild@0.25.12 (postinstall: node install.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+[4/7] Configure astro...
+[5/7] Create site structure...
+[6/7] Build...
+npm notice run wogindex@0.1.0 build
+npm notice run astro build
+19:42:15 [content] Syncing content
+19:42:15 [content] Synced content
+19:42:15 [types] Generated 94ms
+19:42:15 [build] output: "static"
+19:42:15 [build] mode: "static"
+19:42:15 [build] directory: /home/hermes/Proyectos/wog-wiki/dist/
+19:42:15 [build] Collecting build info...
+19:42:15 [build] ✓ Completed in 135ms.
+19:42:15 [build] Building static entrypoints...
+19:42:16 [vite] ✓ built in 1.14s
+19:42:16 [build] ✓ Completed in 1.18s.
+
+ generating static routes 
+19:42:17 ▶ src/pages/404.astro
+19:42:17   └─ /404.html (+8ms) 
+19:42:17 ▶ src/pages/abilities.astro
+19:42:17   └─ /abilities/index.htmlENOENT: no such file or directory, open '/home/hermes/Proyectos/wog-wiki/dist/data/abilities.json'
+  Stack trace:
+    at readFileSync (node:fs:440:20)
+    at abilities (file:///home/hermes/Proyectos/wog-wiki/dist/chunks/astro/server_Inj7khia.mjs:139:12)
+    at renderToString (file:///home/hermes/Proyectos/wog-wiki/node_modules/astro/dist/runtime/server/render/astro/render.js:14:32)
+    at lastNext (file:///home/hermes/Proyectos/wog-wiki/node_modules/astro/dist/core/render-context.js:215:31)
+    at async callMiddleware (file:///home/hermes/Proyectos/wog-wiki/node_modules/astro/dist/core/middleware/callMiddleware.js:11:10)
