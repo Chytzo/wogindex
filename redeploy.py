@@ -21,6 +21,7 @@ run("git push origin main")
 # 2. rebuild gh-pages from ORIGIN main dist (fresh clone to avoid wrecking local)
 CLONE = "/tmp/wog-deploy"
 if os.path.exists(CLONE): shutil.rmtree(CLONE)
+os.makedirs(CLONE)
 run("git clone --depth 1 --branch main https://github.com/Chytzo/wogindex.git .", chdir=CLONE)
 std = os.path.join(CLONE, "dist")
 dstd = os.path.join(CLONE, "dist2")
