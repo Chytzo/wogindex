@@ -7,12 +7,12 @@ const qName = {1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Mythic
 const qBg = {2:"bg-green-400/5",3:"bg-blue-400/5",4:"bg-purple-400/5",5:"bg-orange-400/5",6:"bg-red-400/5"};
 ---
 <BaseLayout title="Equipment">
-  <h1 class="text-3xl font-bold mb-2">Equipment <span class="text-gray-500 text-lg font-normal">({equip.length})</span></h1>
-  <p class="text-gray-400 mb-6">All equippable gear in the game, with quality and stats.</p>
+  <h1 class="text-3xl font-bold mb-2">Equipment <span class="text-mud text-lg font-normal">({equip.length})</span></h1>
+  <p class="text-mud mb-6">All equippable gear in the game, with quality and stats.</p>
   <div class="overflow-x-auto rounded-xl border border-dark-border">
     <table class="w-full text-sm">
       <thead>
-        <tr class="bg-dark-card text-gray-400 text-left">
+        <tr class="bg-dark-card text-mud text-left">
           <th class="p-3 font-semibold">Name</th>
           <th class="p-3 font-semibold">Quality</th>
           <th class="p-3 font-semibold">ID</th>
@@ -24,12 +24,12 @@ const qBg = {2:"bg-green-400/5",3:"bg-blue-400/5",4:"bg-purple-400/5",5:"bg-oran
       <tbody>
         {equip.map((e) => { const r = e.row; return (
           <tr class={`border-t border-dark-border hover:bg-dark-card/60 transition ${qBg[r[16]] || ""}`}>
-            <td class={`p-3 font-medium ${qColor[r[16]] || "text-gray-200"}`}>{e.name_en || e.name_es || `#${r[0]}`}</td>
-            <td class="p-3 text-gray-400">{qName[r[16]] || r[16] || "—"}</td>
-            <td class="p-3 text-gray-500">{r[0]}</td>
-            <td class="p-3 text-gray-300">{r[4] || "—"}</td>
-            <td class="p-3 text-gray-400">{r[9] || "—"}</td>
-            <td class="p-3 text-gray-500">{r[20] || "—"}</td>
+            <td class={`p-3 font-medium ${qColor[r[16]] || "text-cream"}`}>{e.name_en || e.name_es || `#${r[0]}`}</td>
+            <td class="p-3 text-mud">{qName[r[16]] || r[16] || "—"}</td>
+            <td class="p-3 text-mud">{r[0]}</td>
+            <td class="p-3 text-cream/80">{r[4] || "—"}</td>
+            <td class="p-3 text-mud">{r[9] || "—"}</td>
+            <td class="p-3 text-mud">{r[20] || "—"}</td>
           </tr>); })}
       </tbody>
     </table>

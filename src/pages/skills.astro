@@ -6,21 +6,21 @@ const typeNames = {0:"Unknown",1:"Unknown",2:"Unknown",3:"Melee",4:"Ranged",5:"M
 const classNames = {1:"Warrior",2:"Archer",3:"Knight",4:"Priest",5:"Mage",6:"Ninja",7:"Berserker",8:"Templar"};
 ---
 <BaseLayout title="Skills">
-  <h1 class="text-3xl font-bold mb-2">Skills <span class="text-gray-500 text-lg font-normal">({skills.length})</span></h1>
+  <h1 class="text-3xl font-bold mb-2">Skills <span class="text-mud text-lg font-normal">({skills.length})</span></h1>
   <div class="overflow-x-auto rounded-xl border border-dark-border">
     <table class="w-full text-sm">
-      <thead><tr class="bg-dark-card text-gray-400 text-left">
+      <thead><tr class="bg-dark-card text-mud text-left">
         <th class="p-3 font-semibold">Skill</th><th class="p-3 font-semibold">Class</th><th class="p-3 font-semibold">Type</th><th class="p-3 font-semibold">Slot</th><th class="p-3 font-semibold">Range</th><th class="p-3 font-semibold">Cooltime</th>
       </tr></thead>
       <tbody>
         {skills.map((s) => (
           <tr class="border-t border-dark-border hover:bg-dark-card/60 transition">
             <td class="p-3 font-medium">Skill #{s[0]}</td>
-            <td class="p-3 text-gray-400">{classNames[s[1]] || s[1] || "—"}</td>
-            <td class="p-3 text-gray-300">{typeNames[s[7]] || s[7] || "—"}</td>
-            <td class="p-3 text-gray-500">{s[2] || "—"}</td>
-            <td class="p-3 text-gray-400">{(s[9] ?? s[11]) || "—"}</td>
-            <td class="p-3 text-gray-400">{s[17] || "—"}</td>
+            <td class="p-3 text-mud">{classNames[s[1]] || s[1] || "—"}</td>
+            <td class="p-3 text-cream/80">{typeNames[s[7]] || s[7] || "—"}</td>
+            <td class="p-3 text-mud">{s[2] || "—"}</td>
+            <td class="p-3 text-mud">{(s[9] ?? s[11]) || "—"}</td>
+            <td class="p-3 text-mud">{s[17] || "—"}</td>
           </tr>
         ))}
       </tbody>

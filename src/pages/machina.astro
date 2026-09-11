@@ -4,13 +4,13 @@ import { readFileSync } from 'node:fs';
 const machina = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'machina.json', 'utf-8'));
 ---
 <BaseLayout title="Machina">
-  <h1 class="text-3xl font-bold mb-2">Machina <span class="text-gray-500 text-lg font-normal">({machina.length})</span></h1>
+  <h1 class="text-3xl font-bold mb-2">Machina <span class="text-mud text-lg font-normal">({machina.length})</span></h1>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     {machina.map((m) => (
       <div class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-accent transition">
         <div class="font-semibold">{m.name_en || m.name_es || `#${m.row[0]}`}</div>
-        {m.name_es && m.name_en !== m.name_es && <div class="text-xs text-gray-500">{m.name_es}</div>}
-        <div class="mt-2 text-xs text-gray-500">ID {m.row[0]}</div>
+        {m.name_es && m.name_en !== m.name_es && <div class="text-xs text-mud">{m.name_es}</div>}
+        <div class="mt-2 text-xs text-mud">ID {m.row[0]}</div>
       </div>
     ))}
   </div>

@@ -1,62 +1,88 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { readFileSync } from 'node:fs';
+const B = import.meta.env.BASE_URL;
 const heroes = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'heroes.json', 'utf-8'));
 const equip = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'equip.json', 'utf-8'));
 const items = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'items.json', 'utf-8'));
 const monsters = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'monsters.json', 'utf-8'));
 const stages = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'stages.json', 'utf-8'));
-const qColor = {2:"text-green-400",3:"text-blue-400",4:"text-purple-400",5:"text-orange-400",6:"text-red-400"};
+const skills = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'skills.json', 'utf-8'));
+const stats = [
+  ["Heroes", heroes.length, "heroes", "text-gold"],
+  ["Equipment", equip.length, "equip", "text-green-400"],
+  ["Items", items.length, "items", "text-purple-400"],
+  ["Monsters", monsters.length, "monsters", "text-red-400"],
+  ["Skills", skills.length, "skills", "text-blue-400"],
+  ["Stages", stages.length, "stages", "text-orange-400"],
+];
+const explore = [
+  ["Market & Prices", "heroes", "Browse every hero with stats and classes."],
+  ["Gear Database", "equip", "Equipment, weapons and machina with qualities."],
+  ["Crafting Materials", "items", "Consumables, materials and quest items."],
+  ["Monster Bestiary", "monsters", "All monsters and their drop tables."],
+  ["Heroes & Skill Trees", "skills", "Active and passive skills."],
+  ["Stages", "stages", "Stage list with groups and rewards."],
+];
 ---
-<BaseLayout title="Home">
-  <h1 class="text-3xl md:text-4xl font-extrabold mb-2">War of Genesis: <span class="text-accent">Idle Loot</span> Database</h1>
-  <p class="text-gray-400 mb-8">Complete datamined game database — heroes, equipment, monsters, stages, gacha and drop tables.</p>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <a href={`${import.meta.env.BASE_URL}heroes`} class="bg-dark-card border border-dark-border rounded-xl p-5 hover:border-accent transition group">
-      <div class="text-3xl font-bold text-accent">{heroes.length}</div>
-      <div class="text-sm text-gray-400 mt-1 group-hover:text-white">Heroes</div>
-    </a>
-    <a href={`${import.meta.env.BASE_URL}equip`} class="bg-dark-card border border-dark-border rounded-xl p-5 hover:border-accent transition group">
-      <div class="text-3xl font-bold text-green-400">{equip.length}</div>
-      <div class="text-sm text-gray-400 mt-1 group-hover:text-white">Equipment</div>
-    </a>
-    <a href={`${import.meta.env.BASE_URL}items`} class="bg-dark-card border border-dark-border rounded-xl p-5 hover:border-accent transition group">
-      <div class="text-3xl font-bold text-purple-400">{items.length}</div>
-      <div class="text-sm text-gray-400 mt-1 group-hover:text-white">Items</div>
-    </a>
-    <a href={`${import.meta.env.BASE_URL}monsters`} class="bg-dark-card border border-dark-border rounded-xl p-5 hover:border-accent transition group">
-      <div class="text-3xl font-bold text-red-400">{monsters.length}</div>
-      <div class="text-sm text-gray-400 mt-1 group-hover:text-white">Monsters</div>
-    </a>
-  </div>
-  <div class="grid md:grid-cols-2 gap-6">
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-xl font-semibold">Heroes</h2>
-        <a href={`${import.meta.env.BASE_URL}heroes`} class="text-xs text-accent hover:underline">View all →</a>
+<BaseLayout title="War of Genesis: Idle Loot Database & Wiki">
+  <h1 class="font-pixel text-xl md:text-2xl text-gold mb-3 mt-2">War of Genesis: Idle Loot Database &amp; Wiki</h1>
+  <p class="text-mud max-w-3xl leading-relaxed">Complete datamined database for War of Genesis: Idle Loot — heroes, equipment, items, monsters, stages, gacha and drop tables. Unofficial fan wiki, updated from game data.</p>
+
+  <section class="mt-8">
+    <h2 class="font-pixel text-[13px] text-accent mb-4">Quick stats</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      {stats.map(([label, count, href, color]) => (
+        <a href={`${B}${href}`} class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-gold hover:-translate-y-0.5 transition group">
+          <div class={`font-pixel text-lg ${color}`}>{count}</div>
+          <div class="text-xs text-mud mt-1.5 group-hover:text-cream transition">{label}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="font-pixel text-[13px] text-accent mb-4">Explore WoG Index</h2>
+    <div class="grid md:grid-cols-3 gap-3">
+      {explore.map(([label, href, desc]) => (
+        <a href={`${B}${href}`} class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-gold transition group">
+          <div class="text-sm font-bold text-gold">{label}</div>
+          <div class="text-xs text-mud mt-1 group-hover:text-cream/80 transition">{desc}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-pixel text-[13px] text-accent">Featured Heroes</h2>
+      <a href={`${B}heroes`} class="text-xs text-gold hover:underline">View all →</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      {heroes.slice(0, 8).map((h, i) => (
+        <a href={`${B}heroes/${i}`} class="bg-dark-card border border-dark-border rounded-lg p-4 hover:border-gold transition group">
+          <div class="text-xl font-bold text-gold">{h.name_en || h.name_es || `Hero ${i}`}</div>
+          <div class="text-xs text-mud mt-1">ID {h.row[0]} · Quality {h.row[2]}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="font-pixel text-[13px] text-accent mb-4">Frequently asked questions</h2>
+    <div class="bg-dark-card border border-dark-border rounded-lg divide-y divide-dark-border">
+      <div class="p-4">
+        <div class="font-bold text-cream">Is WoG Index official?</div>
+        <p class="text-mud text-sm mt-1 leading-relaxed max-w-3xl">No. WoG Index is an independent, unofficial fan database for War of Genesis: Idle Loot, a game by <b>ANTIGO</b>. It is not affiliated with or endorsed by the developer.</p>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {heroes.map((h, i) => (
-          <a href={`${import.meta.env.BASE_URL}heroes/${i}`} class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition group">
-            <div class={`font-semibold truncate ${qColor[h.row[2]] || "text-gray-200"}`}>{h.name_en || h.name_es || `Hero #${i}`}</div>
-            <div class="text-xs text-gray-500 mt-0.5">ID {h.row[0]}</div>
-          </a>
-        ))}
+      <div class="p-4">
+        <div class="font-bold text-cream">Where does the data come from?</div>
+        <p class="text-mud text-sm mt-1 leading-relaxed max-w-3xl">Data is extracted directly from the game's own tables (msgpack .bin files). Names are resolved via the bundled locale files so they match what you see in game.</p>
       </div>
-    </section>
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-xl font-semibold">Latest Stages</h2>
-        <a href={`${import.meta.env.BASE_URL}stages`} class="text-xs text-accent hover:underline">View all →</a>
+      <div class="p-4">
+        <div class="font-bold text-cream">Is it free?</div>
+        <p class="text-mud text-sm mt-1 leading-relaxed max-w-3xl">Yes. Every section — heroes, gear, items, monsters, stages, gacha and drop tables — is completely free, with no login required.</p>
       </div>
-      <div class="space-y-2">
-        {stages.slice(-12).reverse().map((s) => (
-          <a href={`${import.meta.env.BASE_URL}stages`} class="bg-dark-card border border-dark-border rounded-lg p-3 flex justify-between items-center hover:border-accent transition">
-            <span class="text-sm font-medium">{s[13] || `Stage ${s[0]}`}</span>
-            <span class="text-xs text-gray-500">Group {s[4] || "—"}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 </BaseLayout>

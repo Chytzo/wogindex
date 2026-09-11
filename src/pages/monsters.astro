@@ -4,15 +4,15 @@ import { readFileSync } from 'node:fs';
 const monsters = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'monsters.json', 'utf-8'));
 ---
 <BaseLayout title="Monsters">
-  <h1 class="text-3xl font-bold mb-2">Monsters <span class="text-gray-500 text-lg font-normal">({monsters.length})</span></h1>
-  <p class="text-gray-400 mb-6">All enemy data, showing the first 300 for build size.</p>
+  <h1 class="text-3xl font-bold mb-2">Monsters <span class="text-mud text-lg font-normal">({monsters.length})</span></h1>
+  <p class="text-mud mb-6">All enemy data, showing the first 300 for build size.</p>
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
     {monsters.slice(0, 300).map((m) => (
       <div class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition">
         <div class="text-sm font-medium truncate">{m[35] ? String(m[35]).replace(/_/g," ") : `Monster #${m[0]}`}</div>
-        <div class="text-xs text-gray-500 mt-1">ID {m[0]}</div>
+        <div class="text-xs text-mud mt-1">ID {m[0]}</div>
       </div>
     ))}
   </div>
-  {monsters.length > 300 && <p class="text-gray-500 mt-4">Showing 300 of {monsters.length} monsters.</p>}
+  {monsters.length > 300 && <p class="text-mud mt-4">Showing 300 of {monsters.length} monsters.</p>}
 </BaseLayout>

@@ -13,25 +13,25 @@ const itemName = (num) => {
 };
 ---
 <BaseLayout title="Drop Tables">
-  <h1 class="text-3xl font-bold mb-2">Drop Tables <span class="text-gray-500 text-lg font-normal">({drops.length} entries)</span></h1>
-  <p class="text-gray-400 mb-6">Item drop rates by droplist group.</p>
+  <h1 class="text-3xl font-bold mb-2">Drop Tables <span class="text-mud text-lg font-normal">({drops.length} entries)</span></h1>
+  <p class="text-mud mb-6">Item drop rates by droplist group.</p>
   <div class="overflow-x-auto rounded-xl border border-dark-border">
     <table class="w-full text-sm">
-      <thead><tr class="bg-dark-card text-gray-400 text-left">
+      <thead><tr class="bg-dark-card text-mud text-left">
         <th class="p-3 font-semibold">DropList</th><th class="p-3 font-semibold">Item</th><th class="p-3 font-semibold">Count</th><th class="p-3 font-semibold">Rate</th><th class="p-3 font-semibold">Group</th>
       </tr></thead>
       <tbody>
         {drops.slice(0, 400).map((d) => (
           <tr class="border-t border-dark-border hover:bg-dark-card/60 transition">
-            <td class="p-3 text-gray-400">{d[10]}</td>
+            <td class="p-3 text-mud">{d[10]}</td>
             <td class="p-3 font-medium">{itemName(d[4])}</td>
-            <td class="p-3 text-gray-300">{d[5]}</td>
-            <td class="p-3 text-gray-400">{d[6] !== undefined && d[6] !== null && d[6] !== 0 ? `${d[6]}%` : "—"}</td>
-            <td class="p-3 text-gray-500">{d[0]}</td>
+            <td class="p-3 text-cream/80">{d[5]}</td>
+            <td class="p-3 text-mud">{d[6] !== undefined && d[6] !== null && d[6] !== 0 ? `${d[6]}%` : "—"}</td>
+            <td class="p-3 text-mud">{d[0]}</td>
           </tr>
         ))}
       </tbody>
     </table>
   </div>
-  <p class="text-gray-500 mt-4">Showing 400 of {drops.length} entries.</p>
+  <p class="text-mud mt-4">Showing 400 of {drops.length} entries.</p>
 </BaseLayout>
