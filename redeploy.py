@@ -24,7 +24,7 @@ if os.path.exists(CLONE): shutil.rmtree(CLONE)
 os.makedirs(CLONE)
 run("git clone --depth 1 --branch main https://github.com/Chytzo/wogindex.git .", chdir=CLONE)
 std = os.path.join(CLONE, "dist")
-dstd = os.path.join(CLONE, "dist2")
+dstd = "/tmp/wog-dist-final"
 if os.path.exists(dstd): shutil.rmtree(dstd)
 shutil.copytree(std, dstd)
 
