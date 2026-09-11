@@ -37,7 +37,7 @@ const qColor = {2:"text-green-400",3:"text-blue-400",4:"text-purple-400",5:"text
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {heroes.map((h, i) => (
-          <a href={`/heroes/${i}`} class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition group">
+          <a href={`${import.meta.env.BASE_URL}heroes/${i}`} class="bg-dark-card border border-dark-border rounded-lg p-3 hover:border-accent transition group">
             <div class={`font-semibold truncate ${qColor[h.row[2]] || "text-gray-200"}`}>{h.name_en || h.name_es || `Hero #${i}`}</div>
             <div class="text-xs text-gray-500 mt-0.5">ID {h.row[0]}</div>
           </a>

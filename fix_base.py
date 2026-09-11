@@ -18,6 +18,9 @@ for fp in sorted(files):
     # 2) hrefs dinámicos ya convertidos: href={`${base}x`} -> href={`${import.meta.env.BASE_URL}x`}
     s = s.replace('href={`${base}', 'href={`${import.meta.env.BASE_URL}')
 
+    # 2b) hrefs dinámicos originales con barra literal: href={`/heroes/..`} -> href={`${import.meta.env.BASE_URL}heroes/..`}
+    s = s.replace('href={`/', 'href={`${import.meta.env.BASE_URL}')
+
     # 3) hrefs estáticos href="/x" -> href={`${import.meta.env.BASE_URL}x`}
     def fstat(m):
         return 'href={`${import.meta.env.BASE_URL}' + m.group(1) + '`}'
