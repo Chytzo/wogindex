@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const index = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'dropfinder_index.json', 'utf-8'));
+const B = import.meta.env.BASE_URL;
+const fmt = (n) => n >= 10 ? n.toFixed(1) + "%" : n >= 1 ? n.toFixed(3) + "%" : (n.toFixed(4).replace(/0+$/, "")) + "%";
+---
+<BaseLayout title="Drop Finder">
+  <div class="mb-2 flex items-center gap-3">
+    <h1 class="font-pixel text-xl text-gold">Drop Finder</h1>
+    <span class="text-[11px] uppercase tracking-widest text-mud">Where any item drops</span>
+  </div>
+  <p class="text-mud text-sm mb-5">Search {index.length} items to find every stage where they can drop — normal and boss pools, with datamined rates.</p>
+
+  <div class="relative max-w-2xl mb-6">
+    <input id="df-search" type="text" placeholder="Search items (e.g. sword, coin, rune...)" class="w-full bg-dark-card border border-dark-border rounded-lg px-4 py-2.5 text-sm text-cream placeholder-mud/60 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition" />
+    <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-mud/70 border border-dark-border rounded px-1.5 py-0.5">/</kbd>
+  </div>
+
+  <div id="df-count" class="text-xs text-mud mb-3"></div>
+  <div id="df-results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+
+  <script define:vars={{ index: index, baseUrl: B, fmtStr: fmt.toString() }}>
+    const fmt = new Function('return ' + fmtStr)();
+    const box = document.getElementById('df-search');
+    const grid = document.getElementById('df-results');
+    const count = document.getElementById('df-count');
+    const render = (list) => {
+      grid.innerHTML = list.map((it) => {
+        const nm = it.name || ('#' + it.id);
+        return '<a href="' + baseUrl + 'drops/' + it.id + '" class="bg-dark-card border border-dark-border rounded-lg px-3 py-2.5 hover:border-gold hover:bg-dark-card2 transition group">' +
+          '<div class="text-sm font-medium text-cream/90 group-hover:text-gold truncate">' + nm + '</div>' +
+          '<div class="flex justify-between mt-1 text-[11px] text-mud"><span>' + it.n + ' drops</span><span>best ' + fmt(it.best) + '</span></div>' +
+          '</a>';
+      }).join('');
+      count.textContent = list.length + ' of ' + index.length + ' items';
+    };
+    const filter = () => {
+      const q = box.value.trim().toLowerCase();
+      const rows = q ? index.filter(i => (i.name + ' ' + i.id).toLowerCase().includes(q)) : index;
+      render(rows);
+    };
+    box.addEventListener('input', filter);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); box.focus(); }
+    });
+    filter();
+  </script>
+</BaseLayout>

@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const B = import.meta.env.BASE_URL;
+
+export function getStaticPaths() {
+  const index = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'dropfinder_index.json', 'utf-8'));
+  return index.map((e) => ({ params: { id: e.id } }));
+}
+
+const index = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'dropfinder_index.json', 'utf-8'));
+const { id } = Astro.params;
+const meta = index.find((e) => e.id === id);
+if (!meta) return Astro.redirect(`${B}drops`);
+const all = JSON.parse(readFileSync(process.cwd() + '/src/data/' + `dropfinder_c${meta.chunk}.json`, 'utf-8'));
+const entry = all[id];
+if (!entry) return Astro.redirect(`${B}drops`);
+
+const name = entry.name || '#' + id;
+const sources = entry.sources || [];
+const byStage = {};
+for (const s of sources) {
+  if (!byStage[s.stage]) byStage[s.stage] = { stage: s.stage, name: s.stage_name, normal: null, boss: null };
+  byStage[s.stage][s.kind] = s.rate;
+}
+const stageRows = Object.values(byStage);
+const normal = sources.filter((s) => s.kind === 'normal').length;
+const boss = sources.filter((s) => s.kind === 'boss').length;
+const fmt = (n) => n === null || n === undefined ? "—" : n >= 1 ? n.toFixed(3) + "%" : n.toFixed(4).replace(/0+$/, "") + "%";
+---
+<BaseLayout title={`${name} — Drop Finder`}>
+  <div class="mb-4">
+    <a href={`${B}drops`} class="text-accent text-sm hover:underline">&larr; Drop Finder</a>
+  </div>
+
+  <div class="bg-dark-card border border-dark-border rounded-xl p-5 mb-6 max-w-3xl">
+    <h1 class="font-pixel text-lg text-gold">{name}</h1>
+    <div class="flex gap-2 mt-3 text-xs flex-wrap">
+      <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-cream/80">{sources.length} total drops</span>
+      <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-cream/80">{normal} normal</span>
+      <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-cream/80">{boss} boss</span>
+      <span class="bg-dark-bg border border-dark-border rounded px-2 py-1 text-mud">datamined rates · /1,000,000</span>
+    </div>
+  </div>
+
+  {stageRows.length > 0 && (
+    <div class="bg-dark-card border dark:border-dark-border border-dark-border rounded-xl overflow-hidden max-w-3xl">
+      <div class="px-4 py-3 border-b border-dark-border flex justify-between text-xs uppercase tracking-widest text-gold/70 font-bold">
+        <span>Stage</span>
+        <span>Normal / Boss rate</span>
+      </div>
+      <table class="w-full text-sm">
+        <tbody>
+          {stageRows.map((r) => (
+            <tr class="border-t border-dark-border/60 hover:bg-dark-card2/50 transition">
+              <td class="px-4 py-2.5">
+                <div class="font-medium">{r.name}</div>
+                <div class="text-[11px] text-mud">Stage #{r.stage}</div>
+              </td>
+              <td class="px-4 py-2.5 text-right whitespace-nowrap">
+                <span class="text-cream/80 tabular-nums">{fmt(r.normal)}</span>
+                <span class="mx-2 text-dark-border">/</span>
+                <span class="text-gold tabular-nums">{fmt(r.boss)}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+  <p class="text-mud text-xs mt-4 max-w-3xl">Rates are the raw weights from the game's drop tables (weight / 1,000,000). A stage listed in both columns can roll the item in either its normal or boss pool.</p>
+</BaseLayout>

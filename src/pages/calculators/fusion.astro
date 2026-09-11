@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const B = import.meta.env.BASE_URL;
+const plans = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'fusion_planner.json', 'utf-8'));
+const curve = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'fusion_curve.json', 'utf-8'));
+
+const cats = [
+  { id: '1', name: 'Weapon', mat: '9100' },
+  { id: '2', name: 'Armor / Accessory', mat: '9200' },
+  { id: '3', name: 'Wings', mat: '9400' },
+  { id: '4', name: 'Rune', mat: '9500' },
+  { id: '5', name: 'Pet', mat: '9300' },
+  { id: '20', name: 'Jewel', mat: '9600' },
+].map((c) => {
+  const rec = plans.filter((p) => p.cat === Number(c.id));
+  const steps = rec.slice().sort((a, b) => a.step - b.step).map((p) => ({
+    step: p.step, gold: p.gold, costA: p.cost_a, costB: p.cost_b, need: p.need, matName: p.mat_name,
+  }));
+  const levels = curve[c.id] || [];
+  return { ...c, steps, levels };
+});
+const fmtN = (n) => n >= 1000000 ? (n / 1000000).toFixed(2) + "M" : n >= 10000 ? Math.round(n / 1000) + "k" : String(n);
+const fmtG = (n) => n >= 1000000 ? (n / 1000000).toFixed(2) + "M gold" : Math.round(n / 1000) + "k gold";
+---
+<BaseLayout title="Synthesis Calculator">
+  <div class="mb-2 flex items-center gap-3">
+    <h1 class="font-pixel text-xl text-gold">Synthesis Calculator</h1>
+    <span class="text-[11px] uppercase tracking-widest text-mud">Fusion · grade-up odds & cost</span>
+  </div>
+  <p class="text-mud text-sm mb-6 max-w-3xl">War of Genesis equipment upgrades through <b class="text-cream">Synthesis</b>: fuse <i>N</i> base items with Synthesis-EXP materials and gold to push an item up a fusion step. Pick a gear family and a target level to plan your EXP and gold budget.</p>
+
+  <div class="grid md:grid-cols-[300px_1fr] gap-5">
+    <div>
+      <div class="bg-dark-card border border-dark-border rounded-xl p-4 sticky top-[110px]">
+        <div class="text-[11px] uppercase tracking-widest text-gold/70 font-bold mb-3">Gear family</div>
+        <div class="space-y-1.5">
+          {cats.map((c, ci) => (
+            <button data-cat={c.id} class="cat-btn w-full text-left px-3 py-2 rounded-lg border text-sm transition ${ci===0?'bg-dark-card2 border-gold text-gold':'border-dark-border text-cream/80 hover:border-gold/50'}">
+              {c.name}
+            </button>
+          ))}
+        </div>
+        <div class="mt-5 pt-3 border-t border-dark-border">
+          <div class="text-[11px] uppercase tracking-widest text-gold/70 font-bold mb-2">Target level</div>
+          <input id="lvl-input" type="range" min="1" max="100" value="1" class="w-full accent-[#e8962e]" />
+          <div class="flex justify-between text-xs text-mud mt-1"><span>Lv.1</span><span id="lvl-val" class="text-gold font-bold">Lv.1</span><span>Lv.100</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-5 min-w-0">
+      <div id="cost-panel" class="bg-dark-card border border-dark-border rounded-xl p-5"></div>
+      <div id="steps-panel" class="bg-dark-card border border-dark-border rounded-xl p-5"></div>
+      <div id="levels-panel" class="bg-dark-card border border-dark-border rounded-xl p-5"></div>
+    </div>
+  </div>
+
+  <div class="mt-6 text-xs text-mud max-w-3xl">Data datamined from the game files (<code>Fusion_table.bin</code>, <code>FusionLevel_table.bin</code>). EXP values are cumulative per level; gold costs are the base per-fusion cost before material multipliers.</div>
+</BaseLayout>
+
+<script define:vars={{ cats: cats, fmtN: fmtN.toString(), fmtG: fmtG.toString() }}>
+  const fmtN = new Function('return ' + fmtN)();
+  const fmtG = new Function('return ' + fmtG)();
+  const lvlInput = document.getElementById('lvl-input');
+  const lvlVal = document.getElementById('lvl-val');
+  const costPanel = document.getElementById('cost-panel');
+  const stepsPanel = document.getElementById('steps-panel');
+  const levelsPanel = document.getElementById('levels-panel');
+  let cur = cats[0];
+
+  const render = () => {
+    const cat = cur;
+    const lvl = Number(lvlInput.value);
+    const lv = cat.levels.filter(l => l.lvl <= lvl);
+    const expTotal = lv.reduce((a, l) => a + (l.exp || 0), 0);
+    const expOfLevel = lv.length ? lv[lv.length - 1].exp : 0;
+
+    costPanel.innerHTML =
+      '<div class="flex items-center justify-between flex-wrap gap-3">' +
+        '<div><div class="text-xs uppercase tracking-widest text-mud">' + cat.name + ' · target level</div>' +
+        '<div class="text-2xl font-bold text-gold">Lv.' + lvl + '</div></div>' +
+        '<div class="text-right"><div class="text-xs uppercase tracking-widest text-mud">Total EXP to reach</div>' +
+        '<div class="text-2xl font-bold text-cream" title="' + expTotal + '">~' + fmtN(expTotal) + ' EXP</div></div>' +
+        '<div class="text-right"><div class="text-xs uppercase tracking-widest text-mud">Multiplier at this level</div>' +
+        '<div class="text-2xl font-bold text-accent">x' + (lv.length ? (lv[lv.length-1].mul || 0) : 0) + '</div></div>' +
+      '</div>';
+
+    stepsPanel.innerHTML =
+      '<div class="text-xs uppercase tracking-widest text-gold/70 font-bold mb-3">Fusion steps (' + cat.name + ')</div>' +
+      '<div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-mud text-xs uppercase tracking-widest">' +
+      '<th class="pb-2 pr-3">Step</th><th class="pb-2 pr-3">Gold cost</th><th class="pb-2 pr-3">Material</th><th class="pb-2 pr-3">Exp mats</th></tr></thead><tbody>' +
+      cat.steps.map((s) => '<tr class="border-t border-dark-border/60"><td class="py-2 pr-3 font-medium text-cream/90">' + s.step + '</td>' +
+        '<td class="py-2 pr-3 text-gold tabular-nums">' + fmtG(s.gold) + '</td>' +
+        '<td class="py-2 pr-3 text-cream/80">' + s.matName + '</td>' +
+        '<td class="py-2 pr-3 text-mud tabular-nums">' + s.need + ' items</td></tr>').join('') +
+      '</tbody></table></div>';
+
+    // EXP per level for this family
+    levelsPanel.innerHTML =
+      '<div class="text-xs uppercase tracking-widest text-gold/70 font-bold mb-3">EXP curve — ' + cat.name + ' (first 40 levels)</div>' +
+      '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-[320px] overflow-y-auto pr-1">' +
+      cat.levels.slice(0, 40).map((l) =>
+        '<div class="bg-dark-bg/60 border border-dark-border rounded px-2.5 py-2 ' + (l.lvl <= lvl ? 'border-gold/40' : 'opacity-60') + '">' +
+        '<div class="text-xs font-bold text-cream/90">Lv.' + l.lvl + '</div>' +
+        '<div class="text-[11px] text-mud">' + fmtN(l.exp) + ' exp</div>' +
+        '<div class="text-[10px] text-accent/80">x' + l.mul + '</div></div>').join('') +
+      '</div>';
+  };
+
+  document.querySelectorAll('.cat-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach((b) => { b.className = 'cat-btn w-full text-left px-3 py-2 rounded-lg border text-sm transition border-dark-border text-cream/80 hover:border-gold/50'; });
+      btn.className = 'cat-btn w-full text-left px-3 py-2 rounded-lg border text-sm transition bg-dark-card2 border-gold text-gold';
+      cur = cats.find(c => c.id === btn.dataset.cat) || cur;
+      render();
+    });
+  });
+  lvlInput.addEventListener('input', () => { lvlVal.textContent = 'Lv.' + lvlInput.value; render(); });
+  render();
+</script>

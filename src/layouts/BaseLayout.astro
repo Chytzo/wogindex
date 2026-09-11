@@ -7,9 +7,9 @@ const nav = [
   { group: "Gear & Items", items: [
     ["equip", "Equipment"], ["weapons", "Weapons"], ["items", "Items"], ["pets", "Pets"], ["machina", "Machina"] ] },
   { group: "Stages & Drops", items: [
-    ["stages", "Stages"], ["drops", "Drop Tables"], ["gacha", "Gacha"] ] },
+    ["stages", "Stages"], ["drops", "Drop Finder"], ["gacha", "Gacha"] ] },
   { group: "Tools & Data", items: [
-    ["fusion", "Fusion"] ] },
+    ["fusion", "Fusion"], ["calculators/fusion", "Synthesis Calc"], ["tierlists", "Tier Lists"] ] },
 ];
 const allLinks = nav.flatMap((g) => g.items.map(([href, label]) => ({ href, label })));
 ---

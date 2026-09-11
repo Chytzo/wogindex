@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFileSync } from 'node:fs';
+const B = import.meta.env.BASE_URL;
+const t = JSON.parse(readFileSync(process.cwd() + '/src/data/' + 'tiers.json', 'utf-8'));
+const heroes = t.heroes || [];
+const pets = t.pets || [];
+const tiers = ['S', 'A', 'B', 'C'];
+const tierColors = { S: 'text-gold border-gold bg-gold/10', A: 'text-accent border-accent bg-accent/10', B: 'text-cream/80 border-dark-border bg-dark-card/60', C: 'text-mud border-dark-border bg-dark-bg/60' };
+const tierLabels = { S: 'S · Top tier', A: 'A · Strong', B: 'B · Viable', C: 'C · Situational' };
+const fmtN = (n) => Math.round(n).toLocaleString('en-US');
+---
+<BaseLayout title="Tier Lists">
+  <div class="mb-2 flex items-center gap-3">
+    <h1 class="font-pixel text-xl text-gold">Tier Lists</h1>
+    <span class="text-[11px] uppercase tracking-widest text-mud">Ranked by base stats + power</span>
+  </div>
+  <p class="text-mud text-sm mb-6 max-w-3xl">Power &amp; tiers are computed from the datamined base stats (ATK, secondary ATK, DEF, HP + critical + speed weights). Community upvotes and boss/vs-party matchups are not yet factored in — treat these as a data-centric starting point.</p>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <section class="bg-dark-card border border-dark-border rounded-xl p-4">
+      <div class="text-xs uppercase tracking-widest text-gold/70 font-bold mb-4">Heroes — Base Power Ranking</div>
+      {tiers.map((tk) => {
+        const list = heroes.filter((h) => h.tier === tk);
+        if (!list.length) return null;
+        return (
+          <div class="mb-5">
+            <div class={`flex items-center gap-2 border rounded-lg px-3 py-1.5 mb-2 ${tierColors[tk]}`}>
+              <span class="font-black font-pixel text-sm">{tk}</span>
+              <span class="text-[11px] uppercase tracking-widest opacity-80">{tierLabels[tk]}</span>
+            </div>
+            <div class="grid grid-cols-1 gap-1.5">
+              {list.map((h) => (
+                <a href={`${B}heroes/${h.idx}`} class="flex items-center justify-between gap-2 bg-dark-bg/50 border border-dark-border hover:border-gold/50 rounded-lg px-3 py-2 transition group">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <span class="w-7 h-7 shrink-0 rounded bg-gradient-to-br from-accent/30 to-purple-500/20 flex items-center justify-center text-xs font-black text-cream/80">{h.name[0]}</span>
+                    <span class="truncate text-sm font-medium group-hover:text-gold transition">{h.name}</span>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0">
+                    <span class="text-[11px] text-mud hidden sm:inline">{fmtN(h.atk2)} ATK</span>
+                    <span class="text-xs text-gold font-bold tabular-nums">{fmtN(h.power)}</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+
+    <section class="bg-dark-card border border-dark-border rounded-xl p-4">
+      <div class="text-xs uppercase tracking-widest text-gold/70 font-bold mb-4">Wings / Pets — Sound Rate Ranking</div>
+      <div class="space-y-1.5">
+        {pets.slice().sort((a, b) => (b.sound_rate || 0) - (a.sound_rate || 0)).slice(0, 40).map((p) => (
+          <div class="flex items-center justify-between gap-2 bg-dark-bg/50 border border-dark-border rounded-lg px-3 py-2">
+            <div class="min-w-0">
+              <div class="truncate text-sm">{p.name}</div>
+              <div class="text-[11px] text-mud">Grade {p.grade}</div>
+            </div>
+            <div class="text-xs text-gold font-bold tabular-nums shrink-0">{p.sound_rate}</div>
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-mud mt-4">Ranked by the game's "sound rate" weight (higher = stronger bonus tier). Only the top 40 wings shown.</p>
+    </section>
+  </div>
+  <div class="text-xs text-mud mt-8 max-w-3xl">
+    <b class="text-cream">Methodology:</b> Hero power = ATK + secondary ATK + DEF + HP (datamined base values). Tiers assigned as S = top 15%, A = next 25%, B = next 30%, C = bottom. This is not a substitute for community consensus — it's the objective starting point the site's meta tools build on.
+  </div>
+</BaseLayout>
