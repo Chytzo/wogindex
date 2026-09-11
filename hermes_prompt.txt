@@ -1,0 +1,30 @@
+Eres un analista técnico senior. Analiza COMPLETAMENTE el sitio web https://tbhindex.com (Task Bar Hero Index, la web de referencia para el clon que estamos construyendo: wogindex.com para "War of Genesis: Idle Loot").
+
+OBJETIVO: producir un catálogo exhaustivo y accionable de TODAS las páginas, secciones, herramientas y features del sitio real (NO solo la home — la home es una SPA que renderiza mucho con JS). El usuario quiere saber qué calculadoras, tierlists, rankings, builders, simuladores y demás cosas tiene TBH que nuestro clon todavía NO tiene.
+
+CONTEXTO de nuestro proyecto (para que el análisis sea accionable):
+- Construimos wogindex.com, clon de TBH para el juego "War of Genesis: Idle Loot" en Astro + Tailwind.
+- Ya tenemos datos extraídos del juego en data JSON: heroes, equip, items, weapons, machina, pets, monsters, stages, skills, passiveskills, abilities, abilityactions, drops, droplists, gacha, gachalist, fusion, fusionlevel, passiveitems, locales.
+- El sitio actual ya tiene páginas: Home, Heroes (con detalle por heroe), Skills, Passives, Abilities, Monsters, Equipment, Weapons, Items, Pets, Machina, Stages, Drops, Gacha, Fusion.
+- Lo que el usuario dice que LE FALTA (compara con TBH): calculadoras, tierlist, rankings, builders, simuladores y "muchas más cosas".
+
+HOJA DE RUTA DEL ANÁLISIS:
+0. Si tienes acceso a un navegador tipo Antigravity (antigravity-cli en ~/.gemini/antigravity-cli/ u otro browser toolset), úsalo para navegar las páginas renderizadas con JS de tbhindex.com. En caso de no estar disponible, usa firecrawl/tavily.
+1. Usa firecrawl o tu herramienta de web scrapping para obtener el HTML/mapeo real de tbhindex.com. Si es SPA y el HTML no muestra todo, usa las herramientas de navegación/browser que tengas (firecrawl, tavily, etc.) para descubrir las rutas: prueba URL típicas como /market, /wiki, /wiki/heroes, /wiki/gear, /wiki/materials, /wiki/monsters, /ranking, /calculators/crafting, /calculators/..., /simulators/..., /builds, /teams, /stash, /es (idiomas), etc. Visita también el sitemap: https://tbhindex.com/sitemap.xml si existe, y robots.txt https://tbhindex.com/robots.txt.
+2. Para CADA sección/herramienta encontrada documenta:
+   - Ruta URL
+   - Nombre de la sección
+   - Qué hace exactamente (ej: "calculadora de crafting de cubos con slider de nivel", "tierlist de héroes ordenada por poder con notas", "ranking global de jugadores", "stash value calculator", "build planner", "monster bestiary con drops", "prices del market en vivo", "multi-idioma", etc.)
+   - Inputs del usuario que pide y outputs que muestra
+   - Datos del juego que necesita (y si crees que esos datos existen en nuestros JSON)
+   - Si es factible de clonar en un sitio estático Astro (sí / parcial / no — y por qué)
+3. Prioriza las 10 features más valiosas/viables para nuestro clon y rankéalas de 1 (más valiosa) a 10.
+4. Termina con un resumen ejecutivo: lista de features que debemos implementar, qué tan difícil es cada una, y qué datos del juego necesitan.
+
+IMPORTANTE:
+- Ten en cuenta que el usuario dijo específicamente: tbhindex.com "tiene calculadoras, tiene tierlist, tiene muchas más cosas que aquí". Doy por hecho que esas features existen en TBH; tu trabajo es CONFIRMAR cada una, entender exactamente cómo funcionan (mecánico de inputs/outputs) para poder replicarlas.
+- No pierdas tiempo ni inmediatamente; sé eficiente: obtén el sitemap/robots primero, luego las páginas clave.
+- Trabajo en un directorio: puedes crear archivos de trabajo en /tmp o en ~/Proyectos/wog-wiki/auditoria/.
+- Escribe el informe final a ~/Proyectos/wog-wiki/auditoria/INFORME_TBH_COMPLETO.md con TODO el detalle. Déjalo también como resumen breve en la respuesta final (máx 30 líneas).
+
+Empieza.
