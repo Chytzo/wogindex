@@ -9,7 +9,7 @@ def run(cmd):
         raise SystemExit(r.returncode)
 
 os.chdir(os.path.expanduser("~/Proyectos/wog-wiki"))
-run('git add -A src astro.config.mjs fix_base.py')
-run('git -c user.email="wogindex@chytzo.dev" -c user.name="WoG Index Bot" commit -m "fix: use inline import.meta.env.BASE_URL for links - const base broke Astro compiler"')
+run('git add -A src fix_base.py')
+run('git -c user.email="wogindex@chytzo.dev" -c user.name="WoG Index Bot" commit -m "fix: dynamic hero card hrefs get base prefix"')
 run("git push origin main")
 print("COMMITTED+PUSHED")
